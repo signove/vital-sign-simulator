@@ -1,0 +1,120 @@
+<!doctype html>
+<script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>
+<title>Emulador de sinais vitais</title>
+<h1>LSE</h1>
+Test type:
+<select id="testtypesel">
+  <option value="1">Only wave</option>
+  <option value="2">Time test</option>
+</select>
+
+<div id="onlywave">
+Wave type:<br>
+<select id="modeselector" name="mode">
+<option value="1">NSR</option>
+<option value="2">Arrithymia</option>
+<option value="3">Square</option>
+</select>
+<br>
+<form id="NSR" action="/ecg/bpm" method="post">
+BPM:<br>
+<input type="text" name="nsrbpm" value="{{nsrbpm}}"><br>
+<input type="hidden" name="redirect" value=True>
+<input type="submit" value="Send">
+</form>
+
+<form id="arrithymia" action="/ecg/arrithymia" method="post">
+  <h2>Arrythmia</h2>
+  Obs: Fire vpb may fire couplet, Bigeminy and trigeminy too, and fist fires extreme brady and brady;
+<br>
+  <select id="arrythmiaId" name="arrythmiaId">
+    <option value="1">ECG Extreme Tachy/ HR High (160 bpm)</option>
+    <option value="2">V-Tach</option>
+    <option value="3">Irregular HR</option>
+    <option value="4">ECG Brady / HR Low (40 bpm)</option>
+    <option value="5">ECG Extreme Brady / HR Low(26 bpm)</option>
+    <option value="6">Fire vpb (Last alarm)</option>
+    <option value="7">Make noise</option>
+    <option value="8">Tachy, couplet, trigeminy</option>
+    <option value="9">ECG Vent Rhythm</option>
+  </select><br>
+
+   <input type="submit" value="Send">
+</form>
+
+<form id="square" action="/ecg/square" method="post">
+Period(ms):<br>
+<input type="number" id="squarePeriod" name="squareperiod" value="0"><br>
+High value:<br>
+<input type="number" id="squareHighValue" name="highValue" value="0"><br>
+Low value:<br>
+<input type="number" id="squareLowValue" name="lowValue" value="0"><br>
+<input type="submit" value="Send">
+</form>
+</div>
+
+<div id="timetest">
+  LOG<br>
+  <div id="timetestlog"></div>
+</div>
+<script type="text/javascript">
+function stopTimeTest(){
+  clearTimeout(window.nextWaveTimeout)
+}
+function startTimeTest(){
+  nextWave();
+}
+function nextWave(){
+  var timeout = Math.floor((Math.random() * 20000) + 1000);
+  console.log(timeout)
+  var bpm = Math.floor((Math.random() * 100) + 30);
+  $.post( "/ecg/bpm",{"nsrbpm":bpm, "redirect":"false"}, function( data ) {
+      var now = new Date().toGMTString()
+      $( "#timetestlog" ).append( "<p>"+ now +" - SNR BPM = " + bpm + "</p>" );
+  });
+  window.nextWaveTimeout = setTimeout(nextWave, timeout)
+}
+$('#testtypesel').change(function(){
+  var type = $('#testtypesel').val();
+  if(type==1){
+    $('#timetest').hide();
+    $('#onlywave').show();
+    stopTimeTest();
+  } else {
+    $('#timetest').show();
+    $('#onlywave').hide();
+    startTimeTest();
+  }
+});
+
+$("#modeselector").change(function(){
+   var val = $("#modeselector").val();
+   console.log(val)
+   if(val == 1){
+     $("#NSR").show();
+     $("#arrithymia").hide();
+     $("#square").hide();
+   }else if(val == 2){
+     $("#NSR").hide();
+     $("#arrithymia").show();
+     $("#square").hide();
+   } else if(val == 3){
+     $("#NSR").hide();
+     $("#arrithymia").hide();
+     $("#square").show();
+   }
+
+});
+$.get("ecg/status", [], function(data){
+  data = JSON.parse(data);
+  console.log(typeof data, data);
+   $("#modeselector").val(data.mode);
+   $("#modeselector").change();
+   $("#squarePeriod").val(data.squarePeriod);
+   $("#squareLowValue").val(data.squareLowValue);
+   $("#squareHighValue").val(data.squareHighValue);
+   stopTimeTest()
+})
+
+
+</script>

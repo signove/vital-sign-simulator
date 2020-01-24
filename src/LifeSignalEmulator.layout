@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="controls.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="2809" topLine="199" />
+	</File>
+	<File name="controls.h" open="1" top="0" tabpos="2">
+		<Cursor position="1457" topLine="28" />
+	</File>
+	<File name="ecg.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="908" topLine="64" />
+	</File>
+	<File name="ecg.h" open="1" top="0" tabpos="4">
+		<Cursor position="584" topLine="13" />
+	</File>
+	<File name="emulator1.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="595" topLine="6" />
+	</File>
+	<File name="emulator2.cpp" open="0" top="0" tabpos="4">
+		<Cursor position="3486" topLine="67" />
+	</File>
+	<File name="makefile" open="0" top="0" tabpos="4">
+		<Cursor position="211" topLine="0" />
+	</File>
+	<File name="waves.h" open="1" top="1" tabpos="5">
+		<Cursor position="2263" topLine="20" />
+	</File>
+</CodeBlocks_layout_file>

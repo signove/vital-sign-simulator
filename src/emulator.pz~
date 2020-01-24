@@ -1,0 +1,30 @@
+from ecg import ECG
+from flask import Flask, request, render_template, redirect, url_for
+import netifaces as ni
+
+app=Flask(__name__)
+ecgcontrol = ECG()
+
+@app.route("/")
+def index():
+   return render_template('index.html', bpm=str(ecgcontrol.getBPM()))
+
+@app.route("/ecg/bpm", methods=["GET", "POST"])
+def ecg_bpm():
+    if request.method=="GET":
+        return str(ecgcontrol.getBPM())
+    elif request.method=="POST":
+        bpm=request.form["bpm"]
+        print(bpm)
+        ecgcontrol.setBPM(int(bpm))
+        return redirect(url_for("index"))
+
+def show_ip():
+    ni.ifaddresses('eth0')
+    ip = ni.ifaddresses('eth0')[2][0]['addr']
+    ecgcontrol.showIp(["eth0", ip])
+
+if __name__=="__main__":
+    ecgcontrol.start()
+    show_ip()
+    app.run(host='0.0.0.0')

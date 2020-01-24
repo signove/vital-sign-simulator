@@ -1,0 +1,22 @@
+all: output_file_name
+
+
+CFLAGS=-I.
+OBJS = emulator1.o ecg.o controls.o
+CLASSES = emulator1.cpp ecg.cpp controls.cpp
+
+output_file_name: $(OBJS)
+	g++ $(OBJS)  -o emulator
+
+clean:
+	rm -rf *.o emulator *.so
+
+%.o: %.cpp
+	g++ -c $(CFLAGS) -o $@ $<
+
+debug:
+	g++ -g $(CLASSES) -lpthread -lbcm2835 -lArduiPi_OLED
+
+shared:
+	g++ -c -fpic ecg.cpp -o ecg.o
+	g++ -shared -Wl  -lbcm2835 -lpthread -lArduiPi_OLED -o libecg.so ecg.o 

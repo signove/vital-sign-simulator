@@ -1,0 +1,5 @@
+src/*.o
+src/*.so
+src/*.pyc
+src/*.pz*
+src/makefile~
